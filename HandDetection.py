@@ -35,9 +35,16 @@ while cap.isOpened():
             for i, lm in enumerate(hand_landmarks.landmark):
                 h, w, _ = frame.shape
                 x, y = int(lm.x * w), int(lm.y * h)
-
                 label = finger_joint_labels.get(i, str(i))
-                cv2.putText(frame, label, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
+
+                # Get text size
+                (text_width, text_height), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.4, 1)
+
+                # Draw filled rectangle as background
+                cv2.rectangle(frame, (x, y - text_height - 4), (x + text_width, y + 2), (0, 0, 0), thickness=cv2.FILLED)
+
+                # Put text on top of the rectangle
+                cv2.putText(frame, label, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 0, 0), 1)
 
             # Optional: draw the hand connections
             mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
